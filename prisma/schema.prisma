@@ -1,0 +1,30 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model Order {
+  id        Int      @id @default(autoincrement())
+  customer  String
+  total     Decimal
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  items     Item[]
+
+  @@map("orders")
+}
+
+model Item {
+  id      Int     @id @default(autoincrement())
+  article String
+  qty     Int
+  price   Decimal
+  orderId Int     @map("order_id")
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@map("items")
+}
